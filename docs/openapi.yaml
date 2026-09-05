@@ -20,13 +20,41 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RequisicaoTransacao'
+            examples:
+              exemplo-valido:
+                summary: Exemplo de requisição válida
+                value:
+                  account_id: "123456325349475439"
+                  amount: 150.75
+                  currency: "BRL"
+                  description: "Pagamento fatura"
       responses:
         '201':
-          description: Criado
+          description: Transação aceita para processamento assíncrono
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransacaoCriada'
+        '202':
+          description: Aceito (processamento em segundo plano)
         '400':
           description: Requisição inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
         '409':
-          description: Conflito - duplicado/idempotente
+          description: Conflito - transação duplicada (idempotência)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
 components:
   schemas:
     RequisicaoTransacao:
@@ -48,3 +76,42 @@ components:
           type: string
           description: Código ISO 4217 da moeda (ex: BRL, USD)
           pattern: '^[A-Z]{3}$'
+    TransacaoCriada:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          description: Identificador único criado pelo Hub (UUID)
+        status:
+          type: string
+          description: Estado inicial (ex: PENDING)
+      required: [transaction_id, status]
+    Erro:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required: [code, message]
+    RequisicaoErroExample:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      example:
+        code: INVALID_REQUEST
+        message: Dados inválidos no payload
+
+  parameters:
+    Idempotency-Key:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Chave de idempotência do cliente (obrigatória)
+
+  securitySchemes: {}

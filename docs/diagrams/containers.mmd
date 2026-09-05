@@ -1,0 +1,21 @@
+C4Container
+    title Diagrama de Containers - Hub de Eventos Financeiros
+
+    Person(customer, "Cliente/App")
+
+    System_Boundary(c1, "Hub de Eventos Financeiros") {
+        Container(api_gw, "Gateway API", "API HTTP")
+        Container(tx_worker, "Worker de Ingestão", "Processamento síncrono")
+        ContainerDb(idempotency_db, "Armazenamento de Idempotência", "DynamoDB")
+        Container(event_queue, "Fila de Eventos", "SQS")
+        Container(sync_service, "Worker de Sincronização", "Processamento assíncrono")
+    }
+
+    System_Ext(legacy_mainframe, "Core Legado")
+
+    Rel(customer, api_gw, "1")
+    Rel(api_gw, tx_worker, "2")
+    Rel(tx_worker, idempotency_db, "3")
+    Rel(tx_worker, event_queue, "4")
+    Rel(sync_service, event_queue, "5")
+    Rel(sync_service, legacy_mainframe, "6")

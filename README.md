@@ -11,7 +11,7 @@
 ### A. Diagrama Estrutural: Visão de Containers (C4 Model - Nível 2)
 ```mermaid
 C4Container
-    title Diagrama de Containers - Hub de Eventos Financeiros (versão numerada)
+    title Diagrama de Containers - Hub de Eventos Financeiros 
 
     Person(customer, "Cliente/App")
 

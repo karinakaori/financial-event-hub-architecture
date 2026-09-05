@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Evento de Transação",
+  "type": "object",
+  "properties": {
+    "transaction_id": { "type": "string", "description": "Identificador único da transação (UUID)" },
+    "account_id": { "type": "string", "description": "Identificador da conta do cliente" },
+    "amount": { "type": "number", "description": "Valor da transação" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "description": "Código ISO 4217 da moeda" },
+    "timestamp": { "type": "string", "format": "date-time", "description": "Timestamp ISO 8601 de quando a transação foi processada" }
+  },
+  "required": ["transaction_id", "account_id", "amount", "currency", "timestamp"],
+  "additionalProperties": false
+}

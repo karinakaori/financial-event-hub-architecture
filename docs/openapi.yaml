@@ -1,0 +1,50 @@
+openapi: "3.0.3"
+info:
+  title: API do Hub de Eventos Financeiros
+  version: 1.0.0
+  description: API para ingestão de transações no Financial Event Hub
+paths:
+  /v1/transactions:
+    post:
+      summary: Cria uma transação e publica evento assíncrono
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          description: Chave de idempotência fornecida pelo cliente
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequisicaoTransacao'
+      responses:
+        '201':
+          description: Criado
+        '400':
+          description: Requisição inválida
+        '409':
+          description: Conflito - duplicado/idempotente
+components:
+  schemas:
+    RequisicaoTransacao:
+      title: Requisição de Transação
+      type: object
+      required:
+        - account_id
+        - amount
+        - currency
+      properties:
+        account_id:
+          type: string
+          description: Identificador da conta do cliente
+        amount:
+          type: number
+          format: double
+          description: Valor da transação (pode ser positivo/negativo conforme tipo)
+        currency:
+          type: string
+          description: Código ISO 4217 da moeda (ex: BRL, USD)
+          pattern: '^[A-Z]{3}$'

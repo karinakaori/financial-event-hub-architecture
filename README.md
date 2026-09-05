@@ -11,27 +11,36 @@
 ### A. Diagrama Estrutural: Visão de Containers (C4 Model - Nível 2)
 ```mermaid
 C4Container
-    title Diagrama de Containers - Hub de Eventos Financeiros
+    title Diagrama de Containers - Hub de Eventos Financeiros (versão numerada)
 
-    Person(customer, "Cliente/App", "Realiza transações financeiras.")
-    
-    System_Boundary(c1, "Financial Event Hub") {
-        Container(api_gw, "Gateway de API", "AWS API Gateway", "Autenticação, rate limiting e roteamento")
-        Container(tx_worker, "Worker de Ingestão de Transações", "Java / Spring Boot", "Valida payloads e garante idempotência no DynamoDB")
-        ContainerDb(idempotency_db, "Armazenamento de Idempotência", "DynamoDB", "Armazena hash de transações e chave de deduplicação")
-        Container(event_queue, "Fila de Transações", "AWS SQS", "Fila principal de eventos com DLQ acoplada")
-        Container(sync_service, "Worker de Sincronização com Mainframe", "Python / AsyncIO", "Consome fila e formata registros para o protocolo Mainframe")
+    Person(customer, "Cliente/App")
+
+    System_Boundary(c1, "Hub de Eventos Financeiros") {
+        Container(api_gw, "Gateway API", "API HTTP")
+        Container(tx_worker, "Worker de Ingestão", "Processamento síncrono")
+        ContainerDb(idempotency_db, "Armazenamento de Idempotência", "DynamoDB")
+        Container(event_queue, "Fila de Eventos", "SQS")
+        Container(sync_service, "Worker de Sincronização", "Processamento assíncrono")
     }
 
-    SystemDb_Ext(legacy_mainframe, "Core Bancário Legado", "IBM Mainframe / COBOL (MQ)", "Sistema de registro final de contas e saldos")
+    System_Ext(legacy_mainframe, "Core Legado")
 
-    Rel(customer, api_gw, "Envia transação HTTP/REST", "JSON/HTTPS")
-    Rel(api_gw, tx_worker, "Encaminha chamada", "gRPC / Internal REST")
-    Rel(tx_worker, idempotency_db, "Verifica/Registra Idempotência", "DynamoDB SDK")
-    Rel(tx_worker, event_queue, "Publica evento processado", "AWS SDK SQS")
-    Rel(sync_service, event_queue, "Consome mensagens", "Long Polling")
-    Rel(sync_service, legacy_mainframe, "Sincroniza registro", "IBM MQ / EBCDIC/Fixed-Width")
+    Rel(customer, api_gw, "1")
+    Rel(api_gw, tx_worker, "2")
+    Rel(tx_worker, idempotency_db, "3")
+    Rel(tx_worker, event_queue, "4")
+    Rel(sync_service, event_queue, "5")
+    Rel(sync_service, legacy_mainframe, "6")
 ```
+
+Legenda:
+
+- 1: Requisição HTTP com `Idempotency-Key`
+- 2: Encaminhamento para processamento interno
+- 3: Verificação / gravação de idempotência (DynamoDB)
+- 4: Publicação do evento processado na fila (SQS)
+- 5: Consumo assíncrono pelo `Worker de Sincronização`
+- 6: Envio ao Core Legado (MQ)
 
 ### B. Diagrama de Sequência
 ```mermaid

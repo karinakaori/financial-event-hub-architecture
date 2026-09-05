@@ -32,10 +32,11 @@ Cenários críticos e critérios de aceite:
 
 4) Timeout do Mainframe / MQ
 - Tipo: Integração
-- Passos: Sync Worker envia e aguarda ACK; simular timeout do mock Mainframe
+- Passos: Sync Worker envia e aguarda ACK
+- Simular timeout do mock Mainframe
 - Aceite: Sync Worker re-tenta conforme política (exponencial com jitter)
 - Após 3 tentativas, move mensagem para DLQ
-- Estado manual/operacional requerido para reconciliar.
+- Estado manual/operacional requerido para reconciliar
 
 5) Mensagem malformada na fila
 - Tipo: Unitário + Integração

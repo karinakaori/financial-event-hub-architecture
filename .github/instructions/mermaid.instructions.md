@@ -1,9 +1,7 @@
----
-applyTo: "**"
----
-**Instruções de uso da extensão Mermaid (AI Skills)**
 
-Quando o usuário pedir para criar, editar ou visualizar um diagrama, use as ferramentas
+**Instruções de uso da extensão Mermaid**
+
+Para criar, editar ou visualizar um diagrama, use as ferramentas
 e comandos da extensão Mermaid para VS Code descritos abaixo.
 
 ## Fluxo de trabalho
@@ -28,7 +26,7 @@ Não crie novos IDs de comando. Prefira editar arquivos `.mmd` quando um comando
 ### Edição e pré-visualização
 - **Preview** (`mermaidChart.preview`) — pré-visualiza o editor Mermaid ativo (`.mmd` / `.mermaid` precisa estar aberto).
 - **Create Diagram** (`mermaidChart.createMermaidFile`) — cria um fluxograma de exemplo e abre a pré-visualização lado a lado.
-- **Repair Diagram** (`mermaidChart.repairDiagram`) — reparo via Mermaid AI para o diagrama ativo; consome créditos Mermaid AI — avise o usuário antes.
+- **Repair Diagram** (`mermaidChart.repairDiagram`) — reparo via Mermaid AI para o diagrama ativo; consome créditos Mermaid AI.
 - **Improve Diagram** (`mermaidChart.improveDiagram`) — usa Copilot / API LLM para sugerir variantes de layout e estilo.
 
 ### Gerar diagramas (requer GitHub Copilot)
